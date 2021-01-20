@@ -12,6 +12,7 @@ import Events from './Events';
 import Interactor from './Interactor';
 import Metadata from './Metadata';
 import NodeInfo from './NodeInfo';
+import BlockSelector from './BlockSelector';
 import TemplateModule from './TemplateModule';
 import Transfer from './Transfer';
 import Upgrade from './Upgrade';
@@ -48,12 +49,33 @@ function Main () {
 
   const contextRef = createRef();
 
+  const divStyleInlineBlock = {
+    display: 'inline-Block'
+  };
+
   return (
     <div ref={contextRef}>
       <Sticky context={contextRef}>
         <AccountSelector setAccountAddress={setAccountAddress} />
       </Sticky>
       <Container>
+        <br /><br /><br />
+
+        <Grid stackable columns='equal'>
+          
+          <Grid.Row stretched>
+            <BlockSelector account={accountAddress}/>
+          </Grid.Row>
+        </Grid>
+
+        <br /><br /><br />
+        <br /><br /><br />
+        <br /><br /><br />
+        <br /><br /><br />
+        <br /><br /><br />
+        <br /><br /><br />
+        <br /><br /><br />
+        <p>Dit laten we nog even staan. Wellicht nog hergebruiken, anders weggooien voor Assesment.</p>
         <Grid stackable columns='equal'>
           <Grid.Row stretched>
             <NodeInfo />

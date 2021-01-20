@@ -39,6 +39,7 @@ function Main (props) {
     // Update state with new account address
     setAccountAddress(address);
     setAccountSelected(address);
+
   };
 
   return (
