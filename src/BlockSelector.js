@@ -6,11 +6,6 @@ import { useSubstrate } from './substrate-lib';
 function Main (currentAccount) {
   const { api } = useSubstrate();
   const [nodeInfo, setNodeInfo] = useState({});
-  const [blockNumberTimer, setBlockNumberTimer] = useState(0);
-  const [accountSelected, setAccountSelected] = useState('');
-
-  const [accountBalance, setAccountBalance] = useState(0);
- 
 
   useEffect(() => {
     const getInfo = async () => {
@@ -25,19 +20,8 @@ function Main (currentAccount) {
         console.error(e);
       }
     };
-    setBlockNumberTimer(0);
     getInfo();
-    SetActions();
   }, [api.rpc.system]);
-
-  const timer = () => {
-    setBlockNumberTimer(time => time + 1);
-  };
-
-  useEffect(() => {
-    const id = setInterval(timer, 1000);
-    return () => clearInterval(id);
-  }, []);
 
   const { keyring } = useSubstrate();
   // Get the list of accounts we possess the private key for
@@ -64,7 +48,7 @@ function Main (currentAccount) {
   const transportbedrijfAccounts = ['CHARLIE', 'DAVE'];
   const apotheekAccounts = ['EVE', 'FERDIE'];
 
-  var actions = new Array;
+  var actions = new Array();
   SetActions();
   function SetActions() {
     if(CheckPfizer(currentAccount)){
@@ -98,8 +82,8 @@ function Main (currentAccount) {
   }
 
   function GetUsername(account) {
-    var username = keyringOptions.filter(o => o.value == account)[0];
-    if(username != undefined) {
+    var username = keyringOptions.filter(o => o.value === account)[0];
+    if(username !== undefined) {
       return username.text;
     }
   }
@@ -240,7 +224,6 @@ function Main (currentAccount) {
 
 export default function BlockSelector (props) {
   const { api } = useSubstrate();
-  //const { accountSelected } = props;
   return api.rpc &&
     api.rpc.system &&
     api.rpc.system.chain &&

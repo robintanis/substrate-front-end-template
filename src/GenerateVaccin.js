@@ -24,10 +24,22 @@ function Main (props) {
   }, [api.rpc.system]);
 
   const divWidthStyle = {
-    width: '100%'
+    width: '100%',
+    display: 'block!important'
   };
 
-  const cardWidthStyle = {
+  const cardWidthStyleLeft = {
+    width: '49%',
+    float: 'left'
+  };
+
+  const cardWidthStyleRight = {
+    width: '49%',
+    float: 'right'
+  };
+
+  const divWidthStylePlusTop = {
+    top: '20px',
     width: '100%'
   };
 
@@ -36,17 +48,36 @@ function Main (props) {
   }
 
   return (
+    <div style={divWidthStyle}>
     <Grid.Column style={divWidthStyle}>
-      <Card style={cardWidthStyle}>
+      <Card style={cardWidthStyleLeft}>
         <Card.Content>
-          <Card.Header>Vaccin blockchain</Card.Header>
+          <Card.Header>Controleer vaccin</Card.Header>
           <Card.Meta>
-            <span>Druk op de knop op een nieuw vaccin te genereren.</span>
+            <span>Selecteer een vaccin om de geschiedenis in te zien.</span>
           </Card.Meta>
           <Card.Description>
             
-            <button onClick={() => genereerVaccin()}>Genereer vaccin</button>
+            Hier komt een lijst met vaccins die te selecteren zijn.
+
+          </Card.Description>
+        </Card.Content>
+        <Card.Content extra>
+          <Icon name='setting' />v{nodeInfo.nodeVersion}
+        </Card.Content>
+      </Card>
+      </Grid.Column>
+      <Grid.Column>
+      <Card style={cardWidthStyleRight}>
+        <Card.Content>
+          <Card.Header>Controleer vaccin</Card.Header>
+          <Card.Meta>
+            <span>Selecteer een vaccin om te zien of blockchain geldig is.</span>
+          </Card.Meta>
+          <Card.Description>
             
+            Hier logica inbouwen om dat te laten zien.
+
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
@@ -54,6 +85,25 @@ function Main (props) {
         </Card.Content>
       </Card>
     </Grid.Column>
+    <br /><br />
+    <Grid.Column style={divWidthStyle}>
+        <Card style={divWidthStylePlusTop}>
+          <Card.Content>
+            <Card.Header>Geschiedenis</Card.Header>
+            <Card.Meta>
+              <span>Selecteer hiernaast een vaccin om de geschiedenis te zien.</span>
+            </Card.Meta>
+            <Card.Description>
+              Hier komt de geschiedenis van een vaccin te staan.
+              
+            </Card.Description>
+          </Card.Content>
+          <Card.Content extra>
+            <Icon name='setting' />v{nodeInfo.nodeVersion}
+          </Card.Content>
+        </Card>
+      </Grid.Column>
+    </div>
   );
 }
 
