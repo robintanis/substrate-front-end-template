@@ -200,7 +200,7 @@ function Main (currentAccount) {
     { name: 'owner_account', optional: false, type:'AccountId'},
     { name: 'commodity_info', optional: false, type: 'CommodityInfo'}
   ];
-
+  console.log(currentAccount);
   var buttonProps = { 
     accountPair: {...currentAccount.accountPair},
     setStatus:setStatus,

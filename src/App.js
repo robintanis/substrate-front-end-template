@@ -55,17 +55,13 @@ function Main () {
   const contextRef = createRef();
 
   function goToConsumentenPagina() {
-    console.log('Switch pagina consument');
     isBedrijvenPagina = false;
     setPageState('consumerPage')
-    //ReactDOM.render(AskWitchPage(), document.getElementById('content'));
   }
 
   function goToBedrijvenPagina() {
-    console.log('Switch pagina: bedrijven');
     isBedrijvenPagina = true;
     setPageState('companyPage')
-    //ReactDOM.render(AskWitchPage(), document.getElementById('content'));
   }
 
   const newPageStyle = {
@@ -73,9 +69,8 @@ function Main () {
   };
 
   function AskWitchPage() {
-    console.log('pageState', pageState);
     if(pageState == 'companyPage') {
-      return <BlockSelector account={accountAddress} />;
+      return <BlockSelector account={accountAddress} accountPair={accountPair} />;
     } else {
       return <GenerateVaccin />;
     }
@@ -97,26 +92,14 @@ function Main () {
 
         <Grid stackable columns='equal'>
           <Grid.Row stretched id='content'>
-            {/* <BlockSelector account={accountAddress} accountPair={accountPair}/>
-            <br /><br /><br />
-            Dit moet nog Of / Of worden
-            <br /><br /><br />
-            <br /><br /><br />
-            <GenerateVaccin /> */}
+            
             {AskWitchPage()}
-            {/* <BlockSelector account={accountAddress}/>
-            <GenerateVaccin /> */}
+            
           </Grid.Row>
         </Grid>
 
         <br /><br /><br />
         <br /><br /><br />
-        <br /><br /><br />
-        <br /><br /><br />
-        <br /><br /><br />
-        <br /><br /><br />
-        <br /><br /><br />
-        <p>Dit laten we nog even staan. Wellicht nog hergebruiken, anders weggooien voor Assesment.</p>
         <Grid stackable columns='equal'>
           <Grid.Row stretched>
             <NodeInfo />
