@@ -22,7 +22,7 @@ import GenerateVaccin from './GenerateVaccin';
 function Main () {
   const [accountAddress, setAccountAddress] = useState(null);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
-  const [ pageState, setPageState ] = useState(null);
+  const [ pageState, setPageState ] = useState('consumerPage');
   const accountPair =
     accountAddress &&
     keyringState === 'READY' &&
@@ -57,12 +57,14 @@ function Main () {
   function goToConsumentenPagina() {
     console.log('Switch pagina consument');
     isBedrijvenPagina = false;
+    setPageState('consumerPage')
     //ReactDOM.render(AskWitchPage(), document.getElementById('content'));
   }
 
   function goToBedrijvenPagina() {
     console.log('Switch pagina: bedrijven');
     isBedrijvenPagina = true;
+    setPageState('companyPage')
     //ReactDOM.render(AskWitchPage(), document.getElementById('content'));
   }
 
@@ -71,11 +73,11 @@ function Main () {
   };
 
   function AskWitchPage() {
-    console.log(isBedrijvenPagina);
-    if(isBedrijvenPagina) {
-      return <BlockSelector account={accountAddress} setPageState={setPageState}/>;
+    console.log('pageState', pageState);
+    if(pageState == 'companyPage') {
+      return <BlockSelector account={accountAddress} />;
     } else {
-      return <GenerateVaccin setPageState={setPageState}/>;
+      return <GenerateVaccin />;
     }
   }
 
