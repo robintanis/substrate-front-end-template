@@ -22,9 +22,21 @@ function Main (props) {
   const keyringOptions = keyring.getPairs().map(account => ({
     key: account.address,
     value: account.address,
-    text: account.meta.name.toUpperCase(),
+    text: ChangeUserName(account.meta.name.toUpperCase()),
     icon: 'user'
   }));
+
+  function ChangeUserName(name) {
+    if(name.toLowerCase().includes('alice') || name.toLowerCase().includes('bob')) {
+      return name + '-Pfizer';
+    }
+    else if(name.toLowerCase().includes('charlie') || name.toLowerCase().includes('dave')) {
+      return name + '-Transport';
+    }
+    else if(name.toLowerCase().includes('eve') || name.toLowerCase().includes('ferdie')) {
+      return name + '-Apotheek';
+    }
+  }
 
   const initialAddress =
     keyringOptions.length > 0 ? keyringOptions[0].value : '';
