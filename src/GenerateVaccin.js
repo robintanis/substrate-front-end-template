@@ -105,7 +105,7 @@ const query = async (optional = 'accountForCommodity') => {
       const unsub = await api.query[buttonProps.attrs.palletRpc][optional](...transformed, queryResHandler);
     }else if(optional == 'total'){
       console.log('starting');
-      const unsub = await api.query[buttonProps.attrs.palletRpc][optional](...transformed, queryResHandlerTotal);
+      const unsub = await api.query[buttonProps.attrs.palletRpc][optional](queryResHandlerTotal);
       console.log('executed total')
     }
   }catch(e){
@@ -133,7 +133,9 @@ let buttonProps = {
   setStatus,
   attrs:{ interxType:interxType, palletRpc:'commodities', callable:'accountForCommodity', inputParams, paramFields }
 };
-
+if(totalVaccin == 0){
+  query('total')
+}
 
 console.log(status)
 
@@ -156,7 +158,7 @@ console.log(status)
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
-          <Icon name='check' />{totalVaccin}
+          <Icon name='syringe' />{totalVaccin}
         </Card.Content>
       </Card>
       </Grid.Column>
