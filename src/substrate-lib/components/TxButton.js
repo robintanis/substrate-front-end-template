@@ -42,7 +42,6 @@ function TxButton ({
   useEffect(loadSudoKey, [api]);
 
   const getFromAcct = async () => {
-    console.log('accountpair ', accountPair);
     const {
       address,
       meta: { source, isInjected }

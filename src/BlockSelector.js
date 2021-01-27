@@ -2,24 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Card, Icon, Grid } from 'semantic-ui-react';
 import ReactDOM from 'react-dom';
 import { useSubstrate } from './substrate-lib';
-import { web3FromSource } from '@polkadot/extension-dapp';
 import { TxButton } from './substrate-lib/components';
+import utils from './substrate-lib/utils';
 
 function Main (currentAccount) {
   const { api } = useSubstrate();
   const [nodeInfo, setNodeInfo] = useState({});
   const [status, setStatus] = useState(null);
+  const [statusQuery, setStatusQuery] = useState(null);
   const [interxType, setInterxType] = useState('EXTRINSIC');
-  // console.log('props', props);
-  // let currentAccount = null;
-  // let accountPair = null;
-  // if(props.account && props.accountPair) {
-  //   currentAccount = props.account;
-  //   accountPair = props.accountPair;
-  // } else {
-  //   return;
-  // }
-
+  const [interxQueryType, setInterxQueryType] = useState('QUERY');
+  const [unsub, setUnsub] = useState(null);
+  
   useEffect(() => {
     const getInfo = async () => {
       try {
@@ -53,9 +47,68 @@ function Main (currentAccount) {
     width: '100%'
   };
 
-  // TODO deze ophalen aan de hand van API
+  
   const blocks = ['block1', 'block2', 'block3', 'block4'];
-  const blocksHtml = [];
+  //GetBlocks();
+  
+  async function GetBlocks() {
+    const inputParamsQuery = [
+      { type: 'AccountId', value: currentAccount.account }
+    ];
+  
+    const paramFieldsQuery = [
+      { name: 'owner_account', optional: false, type:'AccountId'}
+    ];
+    var palletRpc = 'commodities';
+    var callable = 'commoditiesForAccount';
+    const transformed = transformParams(paramFieldsQuery, inputParamsQuery);
+    console.log('api', api.query);
+    const unsub = await api.query[palletRpc][callable](...transformed, queryResHandler);
+    setUnsub(() => unsub);
+  }
+  
+  const queryResHandler = result =>
+  result.isNone ? setStatusQuery('None') : setStatusQuery(result.toString().substring(1, result.toString().length -1));
+
+  const isNumType = type =>
+    utils.paramConversion.num.some(el => type.indexOf(el) >= 0);
+
+  const transformParams = (paramFields, inputParams, opts = { emptyAsNull: true }) => {
+    // if `opts.emptyAsNull` is true, empty param value will be added to res as `null`.
+    //   Otherwise, it will not be added
+    const paramVal = inputParams.map(inputParam => {
+      // To cater the js quirk that `null` is a type of `object`.
+      if (typeof inputParam === 'object' && inputParam !== null && typeof inputParam.value === 'string') {
+        return inputParam.value.trim();
+      } else if (typeof inputParam === 'string') {
+        return inputParam.trim();
+      }
+      return inputParam;
+    });
+    const params = paramFields.map((field, ind) => ({ ...field, value: paramVal[ind] || null }));
+
+    return params.reduce((memo, { type = 'string', value }) => {
+      if (value == null || value === '') return (opts.emptyAsNull ? [...memo, null] : memo);
+
+      let converted = value;
+
+      // Deal with a vector
+      if (type.indexOf('Vec<') >= 0) {
+        converted = converted.split(',').map(e => e.trim());
+        converted = converted.map(single => isNumType(type)
+          ? (single.indexOf('.') >= 0 ? Number.parseFloat(single) : Number.parseInt(single))
+          : single
+        );
+        return [...memo, converted];
+      }
+
+      // Deal with a single value
+      if (isNumType(type)) {
+        converted = converted.indexOf('.') >= 0 ? Number.parseFloat(converted) : Number.parseInt(converted);
+      }
+      return [...memo, converted];
+    }, []);
+  };
 
   const pfizerAccounts = ['ALICE','ALICE_STASH','BOB','BOB_STASH'];
   const transportbedrijfAccounts = ['CHARLIE', 'DAVE'];
@@ -107,17 +160,13 @@ function Main (currentAccount) {
     ReactDOM.render('Geselecteerde vaccin: ' + selectedBlock, document.getElementById('selectedBlock'));
   }  
 
-  function voerActieUit() {
-    console.log('Voer actie uit...');
-  }
+  // function voerActieUit() {
+  //   console.log('Voer actie uit...');
+  // }
 
-  for(const [index, value] of blocks.entries()) {
-    blocksHtml.push(<li key={index}><a onClick={() => selectBlock(value)} href='#'>{value}</a></li>)
-  }
-
-  for(const [index, value] of actions.entries()) {
-    actionsHtml.push(<option key={index} value={value}>{value}</option>);
-  }
+  // for(const [index, value] of actions.entries()) {
+  //   actionsHtml.push(<option key={index} value={value}>{value}</option>);
+  // }
 
   const cardBlockRight = {
     width: '45%',
@@ -145,52 +194,6 @@ function Main (currentAccount) {
     width: '100%'
   };
 
-
-  const getFromAcct = async () => {
-    const {
-      address,
-      meta: { source, isInjected }
-    } = currentAccount.accountPair;
-    let fromAcct;
-
-    // signer is from Polkadot-js browser extension
-    if (isInjected) {
-      const injected = await web3FromSource(source);
-      fromAcct = address;
-      api.setSigner(injected.signer);
-    } else {
-      fromAcct = currentAccount.accountPair;
-    }
-
-    return fromAcct;
-  };
-
-  async function genereerVaccin() {
-    console.log('Genereer een vaccin...');
-    const inputParams = [
-      { type: 'AccountId', value: currentAccount.account },
-      { type: 'CommodityInfo', value: new Date().toString() }
-    ];
-
-    const paramFields = [
-      { name: 'owner_account', optional: false, type:'AccountId'},
-      { name: 'commodity_info', optional: false, type: 'CommodityInfo'}
-    ];
-
-    const fromAcct = await getFromAcct();
-    console.log('params ', paramFields);
-    //const transformed = transformParams(paramFields, inputParams);
-    // transformed can be empty parameters
-    // const txExecute = transformed
-    //   ? api.tx.sudo.sudo(api.tx[palletRpc][callable](...transformed))
-    //   : api.tx.sudo.sudo(api.tx[palletRpc][callable]());
-    // const unsub = txExecute.signAndSend(fromAcct, txResHandler)
-    //   .catch(txErrHandler);
-    // setUnsub(() => unsub);
-
-    ReactDOM.render(blocksHtml, document.getElementById('blocksHtml'));
-  }
-
   const inputParams = [
     { type: 'AccountId', value: currentAccount.account },
     { type: 'CommodityInfo', value: new Date().toString() }
@@ -200,10 +203,10 @@ function Main (currentAccount) {
     { name: 'owner_account', optional: false, type:'AccountId'},
     { name: 'commodity_info', optional: false, type: 'CommodityInfo'}
   ];
-  console.log(currentAccount);
+
   var buttonProps = { 
     accountPair: {...currentAccount.accountPair},
-    setStatus:setStatus,
+    setStatus: setStatus,
     attrs:{ interxType:interxType, palletRpc:'commodities', callable:'mint', inputParams, paramFields }
   };
 
@@ -218,9 +221,8 @@ function Main (currentAccount) {
               </Card.Meta>
               <Card.Description>
                 
-                <button onClick={() => genereerVaccin()}>Genereer vaccin</button>
                 <TxButton
-                  label = 'EXTRINSIC'
+                  label = 'Generate vaccin'
                   type = 'SUDO-TX'
                   color = 'blue'
                   {...buttonProps}
@@ -251,19 +253,21 @@ function Main (currentAccount) {
 
                 <div>
                   <p>Hieronder een lijst met alle vaccins:</p>
-                  <ul id="blocksHtml">
-                    {blocksHtml}
-                  </ul>
+
+                  <button onClick={() => GetBlocks()}>Blocks ophalen</button>
+                  <br /><br />
+                  {statusQuery}
+                  
                 </div>
               
               </Card.Description>
               </div>
               <div style={cardBlockRight}>
-                <br /><br /><br /><br />
+                {/* <br /><br /><br /><br />
                 <select id="dropdownactions" name="actions">
                   {actionsHtml}
                 </select>
-                <button onClick={() => voerActieUit()}>Actie uitvoeren</button>
+                <button onClick={() => voerActieUit()}>Actie uitvoeren</button> */}
               </div>
             </Card.Content>
             <Card.Content extra>
