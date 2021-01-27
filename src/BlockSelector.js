@@ -2,10 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { Card, Icon, Grid } from 'semantic-ui-react';
 import ReactDOM from 'react-dom';
 import { useSubstrate } from './substrate-lib';
+import { web3FromSource } from '@polkadot/extension-dapp';
+import { TxButton } from './substrate-lib/components';
 
 function Main (currentAccount) {
   const { api } = useSubstrate();
   const [nodeInfo, setNodeInfo] = useState({});
+  const [status, setStatus] = useState(null);
+  const [interxType, setInterxType] = useState('EXTRINSIC');
+  // console.log('props', props);
+  // let currentAccount = null;
+  // let accountPair = null;
+  // if(props.account && props.accountPair) {
+  //   currentAccount = props.account;
+  //   accountPair = props.accountPair;
+  // } else {
+  //   return;
+  // }
 
   useEffect(() => {
     const getInfo = async () => {
@@ -132,15 +145,67 @@ function Main (currentAccount) {
     width: '100%'
   };
 
-  function genereerVaccin() {
-    console.log('Genereer een vaccin...');
-    blocksHtml.length = 0;
-    blocks.push('NieuwVaccin' + new Date().toISOString());
-    for(const [index, value] of blocks.entries()) {
-      blocksHtml.push(<li key={index}><a onClick={() => selectBlock(value)} href='#'>{value}</a></li>)
+
+  const getFromAcct = async () => {
+    const {
+      address,
+      meta: { source, isInjected }
+    } = currentAccount.accountPair;
+    let fromAcct;
+
+    // signer is from Polkadot-js browser extension
+    if (isInjected) {
+      const injected = await web3FromSource(source);
+      fromAcct = address;
+      api.setSigner(injected.signer);
+    } else {
+      fromAcct = currentAccount.accountPair;
     }
+
+    return fromAcct;
+  };
+
+  async function genereerVaccin() {
+    console.log('Genereer een vaccin...');
+    const inputParams = [
+      { type: 'AccountId', value: currentAccount.account },
+      { type: 'CommodityInfo', value: new Date().toString() }
+    ];
+
+    const paramFields = [
+      { name: 'owner_account', optional: false, type:'AccountId'},
+      { name: 'commodity_info', optional: false, type: 'CommodityInfo'}
+    ];
+
+    const fromAcct = await getFromAcct();
+    console.log('params ', paramFields);
+    //const transformed = transformParams(paramFields, inputParams);
+    // transformed can be empty parameters
+    // const txExecute = transformed
+    //   ? api.tx.sudo.sudo(api.tx[palletRpc][callable](...transformed))
+    //   : api.tx.sudo.sudo(api.tx[palletRpc][callable]());
+    // const unsub = txExecute.signAndSend(fromAcct, txResHandler)
+    //   .catch(txErrHandler);
+    // setUnsub(() => unsub);
+
     ReactDOM.render(blocksHtml, document.getElementById('blocksHtml'));
   }
+
+  const inputParams = [
+    { type: 'AccountId', value: currentAccount.account },
+    { type: 'CommodityInfo', value: new Date().toString() }
+  ];
+
+  const paramFields = [
+    { name: 'owner_account', optional: false, type:'AccountId'},
+    { name: 'commodity_info', optional: false, type: 'CommodityInfo'}
+  ];
+
+  var buttonProps = { 
+    accountPair: {...currentAccount.accountPair},
+    setStatus:setStatus,
+    attrs:{ interxType:interxType, palletRpc:'commodities', callable:'mint', inputParams, paramFields }
+  };
 
   return (
     <Grid stackable columns='equal'>
@@ -154,6 +219,12 @@ function Main (currentAccount) {
               <Card.Description>
                 
                 <button onClick={() => genereerVaccin()}>Genereer vaccin</button>
+                <TxButton
+                  label = 'EXTRINSIC'
+                  type = 'SUDO-TX'
+                  color = 'blue'
+                  {...buttonProps}
+                />
                 
               </Card.Description>
             </Card.Content>
@@ -222,13 +293,13 @@ function Main (currentAccount) {
   );
 }
 
-export default function BlockSelector (props) {
+export default function BlockSelector (accountAddress) {
   const { api } = useSubstrate();
   return api.rpc &&
     api.rpc.system &&
     api.rpc.system.chain &&
     api.rpc.system.name &&
     api.rpc.system.version ? (
-      <Main {...props} />
+      <Main {...accountAddress} />
     ) : null;
 }

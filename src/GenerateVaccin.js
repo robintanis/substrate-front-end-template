@@ -6,7 +6,8 @@ import { useSubstrate } from './substrate-lib';
 function Main (props) {
   const { api } = useSubstrate();
   const [nodeInfo, setNodeInfo] = useState({});
-
+  const [ newState, setNewState ] = useState(null);
+  props.setPageState(setNewState);
   useEffect(() => {
     const getInfo = async () => {
       try {

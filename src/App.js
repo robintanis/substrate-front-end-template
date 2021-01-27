@@ -22,6 +22,7 @@ import GenerateVaccin from './GenerateVaccin';
 function Main () {
   const [accountAddress, setAccountAddress] = useState(null);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
+  const [ pageState, setPageState ] = useState(null);
   const accountPair =
     accountAddress &&
     keyringState === 'READY' &&
@@ -56,17 +57,13 @@ function Main () {
   function goToConsumentenPagina() {
     console.log('Switch pagina consument');
     isBedrijvenPagina = false;
-    // ReactDOM.render(isBedrijvenPagina, document.getElementById('content'));
-    // ReactDOM.render(AskWitchPage(), document.getElementById('content'));
-    ReactDOM.render(AskWitchPage(), document.getElementById('content'));
+    //ReactDOM.render(AskWitchPage(), document.getElementById('content'));
   }
 
   function goToBedrijvenPagina() {
     console.log('Switch pagina: bedrijven');
     isBedrijvenPagina = true;
-    // ReactDOM.render(isBedrijvenPagina, document.getElementById('content'));
-    // ReactDOM.render(AskWitchPage(), document.getElementById('content'));
-    ReactDOM.render(AskWitchPage(), document.getElementById('content'));
+    //ReactDOM.render(AskWitchPage(), document.getElementById('content'));
   }
 
   const newPageStyle = {
@@ -76,9 +73,9 @@ function Main () {
   function AskWitchPage() {
     console.log(isBedrijvenPagina);
     if(isBedrijvenPagina) {
-      return <BlockSelector account={accountAddress}/>;
+      return <BlockSelector account={accountAddress} setPageState={setPageState}/>;
     } else {
-      return <GenerateVaccin />;
+      return <GenerateVaccin setPageState={setPageState}/>;
     }
   }
 
@@ -94,18 +91,17 @@ function Main () {
         </Container>
       </Sticky>
       <Container>
-        <br /><br /><br /><br /><br /><br /><br /><br /><br />
-        <br /><br /><br /><br /><br />
+        <br /><br />
 
         <Grid stackable columns='equal'>
           <Grid.Row stretched id='content'>
-            <BlockSelector account={accountAddress}/>
+            {/* <BlockSelector account={accountAddress} accountPair={accountPair}/>
             <br /><br /><br />
             Dit moet nog Of / Of worden
             <br /><br /><br />
             <br /><br /><br />
-            <GenerateVaccin />
-            {/* {AskWitchPage()} */}
+            <GenerateVaccin /> */}
+            {AskWitchPage()}
             {/* <BlockSelector account={accountAddress}/>
             <GenerateVaccin /> */}
           </Grid.Row>
@@ -118,7 +114,7 @@ function Main () {
         <br /><br /><br />
         <br /><br /><br />
         <br /><br /><br />
-        {/* <p>Dit laten we nog even staan. Wellicht nog hergebruiken, anders weggooien voor Assesment.</p>
+        <p>Dit laten we nog even staan. Wellicht nog hergebruiken, anders weggooien voor Assesment.</p>
         <Grid stackable columns='equal'>
           <Grid.Row stretched>
             <NodeInfo />
@@ -140,7 +136,7 @@ function Main () {
           <Grid.Row>
             <TemplateModule accountPair={accountPair} />
           </Grid.Row>
-        </Grid> */}
+        </Grid>
       </Container>
       <DeveloperConsole />
     </div>

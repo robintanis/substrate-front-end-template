@@ -42,6 +42,7 @@ function TxButton ({
   useEffect(loadSudoKey, [api]);
 
   const getFromAcct = async () => {
+    console.log('accountpair ', accountPair);
     const {
       address,
       meta: { source, isInjected }
@@ -70,12 +71,15 @@ function TxButton ({
 
   const sudoTx = async () => {
     const fromAcct = await getFromAcct();
+    console.log('input ', inputParams);
+    console.log('params ', paramFields);
+    console.log('pallet', palletRpc);
+    console.log('callable', callable);
     const transformed = transformParams(paramFields, inputParams);
     // transformed can be empty parameters
     const txExecute = transformed
       ? api.tx.sudo.sudo(api.tx[palletRpc][callable](...transformed))
       : api.tx.sudo.sudo(api.tx[palletRpc][callable]());
-
     const unsub = txExecute.signAndSend(fromAcct, txResHandler)
       .catch(txErrHandler);
     setUnsub(() => unsub);
@@ -122,6 +126,7 @@ function TxButton ({
 
   const query = async () => {
     const transformed = transformParams(paramFields, inputParams);
+    console.log('api', api.query);
     const unsub = await api.query[palletRpc][callable](...transformed, queryResHandler);
     setUnsub(() => unsub);
   };
@@ -220,7 +225,7 @@ function TxButton ({
       type='submit'
       onClick={transaction}
       disabled={ disabled || !palletRpc || !callable || !allParamsFilled() ||
-        ((isSudo() || isUncheckedSudo()) && !isSudoer(accountPair)) }
+        (( isUncheckedSudo()) && !isSudoer(accountPair)) }
     >
       {label}
     </Button>
