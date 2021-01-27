@@ -79,18 +79,18 @@ function Main () {
     if(pageState == 'companyPage'){
         return <Grid stackable columns='equal'>
           <Grid.Row stretched>
-            <NodeInfo />
-            <Metadata />
+            {/* <NodeInfo />
+            <Metadata /> */}
             <BlockNumber />
             <BlockNumber finalized />
           </Grid.Row>
-          <Grid.Row stretched>
+          {/* <Grid.Row stretched>
             <Balances />
-          </Grid.Row>
-          <Grid.Row>
+          </Grid.Row> */}
+          {/* <Grid.Row>
             <Transfer accountPair={accountPair} />
             <Upgrade accountPair={accountPair} />
-          </Grid.Row>
+          </Grid.Row> */}
           <Grid.Row>
             <Interactor accountPair={accountPair} />
             <Events />
@@ -108,8 +108,8 @@ function Main () {
         <AccountSelector setAccountAddress={setAccountAddress} />
         <Container>
           <div style={newPageStyle}>
-            <Button onClick={() => goToConsumentenPagina()} href='#'>ConsumentenPagina</Button>
             <Button onClick={() => goToBedrijvenPagina()} href='#'>BedrijvenPagina</Button>
+            <Button onClick={() => goToConsumentenPagina()} href='#'>ConsumentenPagina</Button>
           </div>
         </Container>
       </Sticky>

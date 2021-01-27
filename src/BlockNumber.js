@@ -37,9 +37,13 @@ function Main (props) {
     return () => clearInterval(id);
   }, []);
 
+  const width100 = {
+    width: '100%'
+  };
+
   return (
     <Grid.Column>
-      <Card>
+      <Card style={width100}>
         <Card.Content textAlign='center'>
           <Statistic
             label={(finalized ? 'Finalized' : 'Current') + ' Block'}
