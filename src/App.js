@@ -1,5 +1,5 @@
 import React, { useState, createRef } from 'react';
-import { Container, Dimmer, Loader, Grid, Sticky, Message } from 'semantic-ui-react';
+import { Container, Dimmer, Loader, Grid, Sticky, Message, Button } from 'semantic-ui-react';
 import ReactDOM from 'react-dom';
 import 'semantic-ui-css/semantic.min.css';
 
@@ -22,7 +22,7 @@ import GenerateVaccin from './GenerateVaccin';
 function Main () {
   const [accountAddress, setAccountAddress] = useState(null);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
-  const [ pageState, setPageState ] = useState('consumerPage');
+  const [ pageState, setPageState ] = useState('companyPage');
   const accountPair =
     accountAddress &&
     keyringState === 'READY' &&
@@ -72,35 +72,12 @@ function Main () {
     if(pageState == 'companyPage') {
       return <BlockSelector account={accountAddress} accountPair={accountPair} />;
     } else {
-      return <GenerateVaccin />;
+      return <GenerateVaccin account={accountAddress} accountPair={accountPair} />;
     }
   }
-
-  return (
-    <div ref={contextRef}>
-      <Sticky context={contextRef}>
-        <AccountSelector setAccountAddress={setAccountAddress} />
-        <Container>
-          <div style={newPageStyle}>
-            <button onClick={() => goToConsumentenPagina()} href='#'>ConsumentenPagina</button>
-            <button onClick={() => goToBedrijvenPagina()} href='#'>BedrijvenPagina</button>
-          </div>
-        </Container>
-      </Sticky>
-      <Container>
-        <br /><br />
-
-        <Grid stackable columns='equal'>
-          <Grid.Row stretched id='content'>
-            
-            {AskWitchPage()}
-            
-          </Grid.Row>
-        </Grid>
-
-        <br /><br /><br />
-        <br /><br /><br />
-        <Grid stackable columns='equal'>
+  function extraContent() {
+    if(pageState == 'companyPage'){
+        return <Grid stackable columns='equal'>
           <Grid.Row stretched>
             <NodeInfo />
             <Metadata />
@@ -121,7 +98,36 @@ function Main () {
           <Grid.Row>
             <TemplateModule accountPair={accountPair} />
           </Grid.Row>
+        </Grid>;
+    }
+  }
+
+  return (
+    <div ref={contextRef}>
+      <Sticky context={contextRef}>
+        <AccountSelector setAccountAddress={setAccountAddress} />
+        <Container>
+          <div style={newPageStyle}>
+            <Button onClick={() => goToConsumentenPagina()} href='#'>ConsumentenPagina</Button>
+            <Button onClick={() => goToBedrijvenPagina()} href='#'>BedrijvenPagina</Button>
+          </div>
+        </Container>
+      </Sticky>
+      <Container>
+        <br /><br />
+
+        <Grid stackable columns='equal'>
+          <Grid.Row stretched id='content'>
+            
+            {AskWitchPage()}
+            
+          </Grid.Row>
         </Grid>
+
+        <br /><br /><br />
+        <br /><br /><br />
+        {extraContent()}
+        
       </Container>
       <DeveloperConsole />
     </div>
