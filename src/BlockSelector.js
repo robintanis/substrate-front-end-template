@@ -254,7 +254,7 @@ function Main (currentAccount) {
                 <div>
                   <p>Hieronder een lijst met alle vaccins:</p>
 
-                  <button onClick={() => GetBlocks()}>Blocks ophalen</button>
+                  <button onClick={() => GetBlocks()}>Vaccins ophalen</button>
                   <br /><br />
                   {statusQuery}
                   

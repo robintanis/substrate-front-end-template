@@ -143,8 +143,12 @@ function TxButton ({
 
   const transaction = async () => {
     if (unsub) {
-      unsub();
-      setUnsub(null);
+      try{
+        unsub();
+        setUnsub(null);
+      } catch(error) {
+        //console.error(error);
+      }
     }
 
     setStatus('Sending...');
