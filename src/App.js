@@ -125,7 +125,6 @@ function Main () {
         </Grid>
 
         <br /><br /><br />
-        <br /><br /><br />
         {extraContent()}
         
       </Container>

@@ -40,7 +40,7 @@ function Main (currentAccount) {
   }));
 
   const divWidthStyle = {
-    width: '66%'
+    width: '100%'
   };
 
   const cardWidthStyle = {
@@ -211,18 +211,18 @@ function Main (currentAccount) {
   };
 
   return (
-    <Grid stackable columns='equal'>
+    <Grid stackable columns='equal' style={cardWidthStyleHeader}>
         <Grid.Column style={divWidthStyleHeader}>
           <Card style={cardWidthStyleHeader}>
             <Card.Content>
-              <Card.Header>Vaccin blockchain</Card.Header>
+              <Card.Header>Vaccine blockchain</Card.Header>
               <Card.Meta>
-                <span>Druk op de knop op een nieuw vaccin te genereren.</span>
+                <span>Press on the button to generate a new vaccine.</span>
               </Card.Meta>
               <Card.Description>
                 
                 <TxButton
-                  label = 'Generate vaccin'
+                  label = 'Generate vaccine'
                   type = 'SUDO-TX'
                   color = 'blue'
                   {...buttonProps}
@@ -230,31 +230,31 @@ function Main (currentAccount) {
                 
               </Card.Description>
             </Card.Content>
-            <Card.Content id="selectedBlock">
+            {/* <Card.Content id="selectedBlock">
 
               Geselecteerde vaccin: er is geen vaccin geselecteerd.
 
-            </Card.Content>
+            </Card.Content> */}
             <Card.Content extra>
               <Icon name='setting' />v{nodeInfo.nodeVersion}
             </Card.Content>
           </Card>
         </Grid.Column>
       <Grid style={divWidthStyleHeader}>
-        <Grid.Column style={divWidthStyle}>
+        <Grid.Column style={divWidthStyleHeader}>
           <Card style={cardWidthStyle}>
             <Card.Content>
               <div style={cardBlockLeft}>
-              <Card.Header>Vaccins</Card.Header>
-              <Card.Meta>
+              <Card.Header>Vaccines</Card.Header>
+              {/* <Card.Meta>
                 <span>Selecteer een vaccin en voer een actie uit.</span>
-              </Card.Meta>
+              </Card.Meta> */}
               <Card.Description>
 
                 <div>
-                  <p>Hieronder een lijst met alle vaccins:</p>
+                  <p>Below is a list of vaccines:</p>
 
-                  <button onClick={() => GetBlocks()}>Vaccins ophalen</button>
+                  <button onClick={() => GetBlocks()}>Get Vaccines</button>
                   <br /><br />
                   {statusQuery}
                   
@@ -275,6 +275,7 @@ function Main (currentAccount) {
             </Card.Content>
           </Card>
         </Grid.Column>
+        {/* 
         <Grid.Column style={divWidthStyleRight}>
         <Card style={cardWidthStyleRight}>
           <Card.Content>
@@ -291,7 +292,7 @@ function Main (currentAccount) {
             <Icon name='setting' />v{nodeInfo.nodeVersion}
           </Card.Content>
         </Card>
-      </Grid.Column>
+      </Grid.Column> */}
     </Grid>
     </Grid>
   );

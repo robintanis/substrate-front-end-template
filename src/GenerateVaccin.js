@@ -99,14 +99,11 @@ function Main (props) {
 
 const query = async (optional = 'accountForCommodity') => {
   const transformed = transformParams(paramFields, inputParams);
-  console.log(optional);
   try{
     if(optional == 'accountForCommodity'){
       const unsub = await api.query[buttonProps.attrs.palletRpc][optional](...transformed, queryResHandler);
     }else if(optional == 'total'){
-      console.log('starting');
       const unsub = await api.query[buttonProps.attrs.palletRpc][optional](queryResHandlerTotal);
-      console.log('executed total')
     }
   }catch(e){
     setStatus('Invalid Vaccin. Do not use!');
@@ -136,8 +133,6 @@ let buttonProps = {
 if(totalVaccin == 0){
   query('total')
 }
-
-console.log(status)
 
   return (
     <div style={divWidthStyle}>
